@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Favorite Shows Ranked</title>
+  <title>MyWatchLedger</title>
 
   <style>
     * {
@@ -13,37 +13,102 @@
       font-family: Arial, Helvetica, sans-serif;
     }
 
+    :root {
+      --bg: #070707;
+      --card: #141414;
+      --card2: #0d0d0d;
+      --text: #ffffff;
+      --muted: #b8b8b8;
+      --gold: #ffcc66;
+      --red: #e50914;
+      --border: rgba(255,255,255,.12);
+    }
+
     body {
-      background: #070707;
-      color: white;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
     }
 
-    header {
-      padding: 35px 7%;
-      background: linear-gradient(to bottom, rgba(0,0,0,.95), rgba(0,0,0,.65), transparent);
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(5,5,5,.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 7%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 1.45rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    .logo span {
+      color: var(--gold);
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn, .main-btn, .small-btn {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.07);
+      color: white;
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: .2s ease;
+      font-weight: 700;
+    }
+
+    .nav-btn.active,
+    .nav-btn:hover,
+    .main-btn:hover,
+    .small-btn:hover {
+      background: var(--gold);
+      color: #060606;
+      border-color: var(--gold);
     }
 
     .hero {
-      padding: 60px 7% 35px;
+      padding: 75px 7% 45px;
       background:
-        linear-gradient(to right, rgba(0,0,0,.95), rgba(0,0,0,.55)),
+        linear-gradient(to right, rgba(0,0,0,.96), rgba(0,0,0,.62), rgba(0,0,0,.25)),
         url("https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?auto=format&fit=crop&w=1600&q=80");
       background-size: cover;
       background-position: center;
-      border-bottom: 1px solid rgba(255,255,255,.1);
+      border-bottom: 1px solid var(--border);
     }
 
     .hero h1 {
-      font-size: clamp(2.3rem, 6vw, 5rem);
-      margin-bottom: 15px;
+      font-size: clamp(2.5rem, 6vw, 5.3rem);
+      margin-bottom: 12px;
+      line-height: 1;
     }
 
     .hero p {
-      max-width: 700px;
+      max-width: 760px;
       color: #d6d6d6;
       font-size: 1.1rem;
       line-height: 1.6;
+    }
+
+    .hero-actions {
+      margin-top: 24px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
     .stats {
@@ -55,7 +120,7 @@
 
     .stat {
       background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.12);
+      border: 1px solid var(--border);
       padding: 15px 22px;
       border-radius: 16px;
       backdrop-filter: blur(10px);
@@ -64,11 +129,70 @@
     .stat strong {
       display: block;
       font-size: 1.5rem;
-      color: #ffcc66;
+      color: var(--gold);
     }
 
     main {
       padding: 35px 7%;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .section-title h2 {
+      font-size: 1.8rem;
+    }
+
+    .featured {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 24px;
+      background: linear-gradient(135deg, rgba(255,204,102,.18), rgba(255,255,255,.05));
+      border: 1px solid rgba(255,204,102,.25);
+      border-radius: 26px;
+      padding: 22px;
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+
+    .featured-poster {
+      min-height: 270px;
+      border-radius: 20px;
+      background-size: cover;
+      background-position: center;
+      background-color: #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 2rem;
+      text-align: center;
+      padding: 18px;
+    }
+
+    .featured h3 {
+      color: var(--gold);
+      font-size: .95rem;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .featured h2 {
+      font-size: clamp(2rem, 5vw, 4rem);
+      margin-bottom: 10px;
+    }
+
+    .featured p {
+      color: #ddd;
+      line-height: 1.6;
+      max-width: 760px;
     }
 
     .controls {
@@ -78,17 +202,21 @@
       margin-bottom: 25px;
     }
 
-    input, select {
+    input, select, textarea {
       background: #141414;
       color: white;
-      border: 1px solid rgba(255,255,255,.14);
+      border: 1px solid var(--border);
       border-radius: 12px;
       padding: 13px 15px;
       font-size: 1rem;
       outline: none;
     }
 
-    input {
+    input, textarea {
+      width: 100%;
+    }
+
+    #searchInput {
       flex: 1;
       min-width: 240px;
     }
@@ -97,23 +225,29 @@
       min-width: 180px;
     }
 
-    .show-grid {
+    .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
       gap: 22px;
     }
 
-    .show-card {
+    .card {
       background: linear-gradient(180deg, #181818, #0e0e0e);
-      border: 1px solid rgba(255,255,255,.1);
+      border: 1px solid var(--border);
       border-radius: 22px;
       overflow: hidden;
       position: relative;
       box-shadow: 0 20px 40px rgba(0,0,0,.35);
       transition: .25s ease;
+      cursor: grab;
     }
 
-    .show-card:hover {
+    .card.dragging {
+      opacity: .45;
+      transform: scale(.98);
+    }
+
+    .card:hover {
       transform: translateY(-6px);
       border-color: rgba(255,204,102,.55);
     }
@@ -122,7 +256,7 @@
       position: absolute;
       top: 14px;
       left: 14px;
-      background: #ffcc66;
+      background: var(--gold);
       color: #050505;
       font-weight: 900;
       padding: 8px 12px;
@@ -131,8 +265,10 @@
     }
 
     .poster {
-      height: 185px;
+      height: 260px;
       background: linear-gradient(135deg, #222, #444);
+      background-size: cover;
+      background-position: center;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -153,7 +289,7 @@
     }
 
     .rating {
-      color: #ffcc66;
+      color: var(--gold);
       font-weight: bold;
       margin-bottom: 12px;
     }
@@ -184,54 +320,172 @@
       color: white;
     }
 
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .small-btn {
+      border-radius: 10px;
+      padding: 9px 11px;
+      font-size: .85rem;
+    }
+
+    .delete-btn:hover {
+      background: var(--red);
+      color: white;
+      border-color: var(--red);
+    }
+
+    .empty {
+      color: var(--muted);
+      padding: 35px;
+      border: 1px dashed var(--border);
+      border-radius: 20px;
+      text-align: center;
+      grid-column: 1 / -1;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.78);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      padding: 18px;
+    }
+
+    .modal.open {
+      display: flex;
+    }
+
+    .modal-box {
+      width: min(720px, 100%);
+      max-height: 92vh;
+      overflow-y: auto;
+      background: #101010;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 30px 90px rgba(0,0,0,.65);
+    }
+
+    .modal-box h2 {
+      margin-bottom: 18px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 13px;
+    }
+
+    .form-full {
+      grid-column: 1 / -1;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
     footer {
       padding: 30px 7%;
       color: #888;
       text-align: center;
-      border-top: 1px solid rgba(255,255,255,.08);
+      border-top: 1px solid var(--border);
       margin-top: 30px;
+    }
+
+    @media (max-width: 760px) {
+      .featured {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .navbar {
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
 
 <body>
 
+  <nav class="navbar">
+    <div class="logo">MyWatch<span>Ledger</span></div>
+
+    <div class="nav-buttons">
+      <button class="nav-btn active" data-tab="home">Home</button>
+      <button class="nav-btn" data-tab="shows">Shows</button>
+      <button class="nav-btn" data-tab="movies">Movies</button>
+      <button class="nav-btn" data-tab="watchlist">Watchlist</button>
+    </div>
+  </nav>
+
   <section class="hero">
-    <h1>My Favorite Shows Ranked</h1>
+    <h1>MyWatchLedger</h1>
     <p>
-      A personal ranking of my favorite shows, with ratings, genres, favorite characters,
-      best seasons, and rewatch value.
+      Track your favorite shows and movies. Rank them, review them, reorder them,
+      and build your own personal entertainment archive.
     </p>
+
+    <div class="hero-actions">
+      <button class="main-btn" onclick="openModal()">+ Add New</button>
+      <button class="main-btn" onclick="resetData()">Reset Demo Data</button>
+    </div>
 
     <div class="stats">
       <div class="stat">
+        <strong id="totalItems">0</strong>
+        Total Titles
+      </div>
+      <div class="stat">
         <strong id="totalShows">0</strong>
-        Shows Ranked
+        Shows
+      </div>
+      <div class="stat">
+        <strong id="totalMovies">0</strong>
+        Movies
       </div>
       <div class="stat">
         <strong id="averageRating">0</strong>
         Avg Rating
       </div>
-      <div class="stat">
-        <strong id="topGenre">Drama</strong>
-        Top Genre
-      </div>
     </div>
   </section>
 
   <main>
+    <div id="featuredArea"></div>
+
+    <div class="section-title">
+      <h2 id="sectionHeading">Top Ranked Shows</h2>
+      <p style="color:#aaa;">Drag cards to reorder your rankings.</p>
+    </div>
+
     <div class="controls">
-      <input type="text" id="searchInput" placeholder="Search shows..." />
+      <input type="text" id="searchInput" placeholder="Search..." />
 
       <select id="genreFilter">
         <option value="All">All Genres</option>
-        <option value="Drama">Drama</option>
         <option value="Action">Action</option>
-        <option value="Crime">Crime</option>
-        <option value="Supernatural">Supernatural</option>
         <option value="Comedy">Comedy</option>
-        <option value="Sci-Fi">Sci-Fi</option>
+        <option value="Crime">Crime</option>
+        <option value="Drama">Drama</option>
         <option value="Fantasy">Fantasy</option>
+        <option value="Sci-Fi">Sci-Fi</option>
+        <option value="Supernatural">Supernatural</option>
+        <option value="Thriller">Thriller</option>
+        <option value="Western">Western</option>
       </select>
 
       <select id="statusFilter">
@@ -239,212 +493,371 @@
         <option value="Finished">Finished</option>
         <option value="Watching">Watching</option>
         <option value="Need to Finish">Need to Finish</option>
+        <option value="Want to Watch">Want to Watch</option>
       </select>
     </div>
 
-    <div class="show-grid" id="showGrid"></div>
+    <div class="grid" id="itemGrid"></div>
   </main>
 
+  <div class="modal" id="itemModal">
+    <div class="modal-box">
+      <h2 id="modalTitle">Add New Title</h2>
+
+      <div class="form-grid">
+        <input type="hidden" id="editId">
+
+        <select id="typeInput">
+          <option value="show">Show</option>
+          <option value="movie">Movie</option>
+          <option value="watchlist">Watchlist</option>
+        </select>
+
+        <input id="titleInput" placeholder="Title">
+
+        <input id="ratingInput" type="number" step="0.1" min="0" max="10" placeholder="Rating out of 10">
+
+        <input id="genresInput" placeholder="Genres, separated by commas">
+
+        <input id="platformInput" placeholder="Platform">
+
+        <select id="statusInput">
+          <option value="Finished">Finished</option>
+          <option value="Watching">Watching</option>
+          <option value="Need to Finish">Need to Finish</option>
+          <option value="Want to Watch">Want to Watch</option>
+        </select>
+
+        <input id="favoriteInput" placeholder="Favorite character">
+
+        <input id="seasonInput" placeholder="Best season">
+
+        <input id="rewatchInput" placeholder="Rewatch value">
+
+        <input id="posterInput" placeholder="Poster image URL">
+
+        <textarea class="form-full" id="notesInput" rows="4" placeholder="Notes"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button class="main-btn" onclick="closeModal()">Cancel</button>
+        <button class="main-btn" onclick="saveItem()">Save</button>
+      </div>
+    </div>
+  </div>
+
   <footer>
-    Built for ranking the best shows of all time.
+    MyWatchLedger — Track. Rank. Remember.
   </footer>
 
   <script>
-    const shows = [
-      {
-        rank: 1,
-        title: "Ted Lasso",
-        rating: 10,
-        genre: ["Comedy", "Drama"],
-        status: "Finished",
-        platform: "Apple TV+",
-        favoriteCharacter: "Roy Kent",
-        bestSeason: "Season 1",
-        rewatch: "High",
-        notes: "One of the best feel-good shows ever."
-      },
-      {
-        rank: 2,
-        title: "Suits",
-        rating: 9.7,
-        genre: ["Drama"],
-        status: "Finished",
-        platform: "Netflix / Peacock",
-        favoriteCharacter: "Harvey Specter",
-        bestSeason: "Season 2",
-        rewatch: "High",
-        notes: "Smart, clean, and easy to binge."
-      },
-      {
-        rank: 3,
-        title: "Prison Break",
-        rating: 9.6,
-        genre: ["Action", "Drama"],
-        status: "Finished",
-        platform: "Hulu",
-        favoriteCharacter: "Michael Scofield",
-        bestSeason: "Season 1",
-        rewatch: "High",
-        notes: "One of the best first seasons ever."
-      },
-      {
-        rank: 4,
-        title: "The 100",
-        rating: 9.5,
-        genre: ["Sci-Fi", "Drama"],
-        status: "Finished",
-        platform: "Netflix",
-        favoriteCharacter: "Bellamy",
-        bestSeason: "Season 2",
-        rewatch: "Medium",
-        notes: "Great survival and post-apocalyptic story."
-      },
-      {
-        rank: 5,
-        title: "Yellowstone",
-        rating: 9.4,
-        genre: ["Drama"],
-        status: "Watching",
-        platform: "Paramount",
-        favoriteCharacter: "Rip Wheeler",
-        bestSeason: "Season 3",
-        rewatch: "High",
-        notes: "Perfect mix of ranch drama and power."
-      },
-      {
-        rank: 6,
-        title: "Daredevil",
-        rating: 9.3,
-        genre: ["Action", "Crime"],
-        status: "Finished",
-        platform: "Disney+",
-        favoriteCharacter: "Matt Murdock",
-        bestSeason: "Season 3",
-        rewatch: "High",
-        notes: "Probably the best Marvel show."
-      },
-      {
-        rank: 7,
-        title: "Reacher",
-        rating: 9.2,
-        genre: ["Action", "Crime"],
-        status: "Watching",
-        platform: "Prime Video",
-        favoriteCharacter: "Jack Reacher",
-        bestSeason: "Season 1",
-        rewatch: "High",
-        notes: "Straight-up action and mystery."
-      },
-      {
-        rank: 8,
-        title: "The Originals",
-        rating: 9.1,
-        genre: ["Supernatural", "Drama"],
-        status: "Finished",
-        platform: "Netflix",
-        favoriteCharacter: "Klaus Mikaelson",
-        bestSeason: "Season 3",
-        rewatch: "High",
-        notes: "Darker and better than most supernatural shows."
-      },
-      {
-        rank: 9,
-        title: "Game of Thrones",
-        rating: 9.0,
-        genre: ["Fantasy", "Drama"],
-        status: "Finished",
-        platform: "HBO Max",
-        favoriteCharacter: "Jon Snow",
-        bestSeason: "Season 4",
-        rewatch: "Medium",
-        notes: "Peak fantasy TV when it was at its best."
-      },
-      {
-        rank: 10,
-        title: "White Collar",
-        rating: 8.9,
-        genre: ["Crime", "Drama"],
-        status: "Finished",
-        platform: "Hulu",
-        favoriteCharacter: "Neal Caffrey",
-        bestSeason: "Season 2",
-        rewatch: "High",
-        notes: "Smooth, smart, and easy to watch."
-      }
+    const defaultItems = [
+      { id: crypto.randomUUID(), type: "show", title: "Ted Lasso", rating: 10, genres: ["Comedy", "Drama"], status: "Finished", platform: "Apple TV+", favorite: "Roy Kent", bestSeason: "Season 1", rewatch: "High", poster: "", notes: "One of the best feel-good shows ever." },
+      { id: crypto.randomUUID(), type: "show", title: "Suits", rating: 9.7, genres: ["Drama"], status: "Finished", platform: "Netflix / Peacock", favorite: "Harvey Specter", bestSeason: "Season 2", rewatch: "High", poster: "", notes: "Smart, clean, and easy to binge." },
+      { id: crypto.randomUUID(), type: "show", title: "Prison Break", rating: 9.6, genres: ["Action", "Drama"], status: "Finished", platform: "Hulu", favorite: "Michael Scofield", bestSeason: "Season 1", rewatch: "High", poster: "", notes: "One of the best first seasons ever." },
+      { id: crypto.randomUUID(), type: "show", title: "The 100", rating: 9.5, genres: ["Sci-Fi", "Drama"], status: "Finished", platform: "Netflix", favorite: "Bellamy", bestSeason: "Season 2", rewatch: "Medium", poster: "", notes: "Great survival and post-apocalyptic story." },
+      { id: crypto.randomUUID(), type: "show", title: "Yellowstone", rating: 9.4, genres: ["Drama", "Western"], status: "Watching", platform: "Paramount", favorite: "Rip Wheeler", bestSeason: "Season 3", rewatch: "High", poster: "", notes: "Perfect mix of ranch drama and power." },
+      { id: crypto.randomUUID(), type: "show", title: "Daredevil", rating: 9.3, genres: ["Action", "Crime"], status: "Finished", platform: "Disney+", favorite: "Matt Murdock", bestSeason: "Season 3", rewatch: "High", poster: "", notes: "Probably the best Marvel show." },
+      { id: crypto.randomUUID(), type: "show", title: "Reacher", rating: 9.2, genres: ["Action", "Crime"], status: "Watching", platform: "Prime Video", favorite: "Jack Reacher", bestSeason: "Season 1", rewatch: "High", poster: "", notes: "Straight-up action and mystery." },
+      { id: crypto.randomUUID(), type: "show", title: "The Originals", rating: 9.1, genres: ["Supernatural", "Drama"], status: "Finished", platform: "Netflix", favorite: "Klaus Mikaelson", bestSeason: "Season 3", rewatch: "High", poster: "", notes: "Darker and better than most supernatural shows." },
+      { id: crypto.randomUUID(), type: "show", title: "Game of Thrones", rating: 9.0, genres: ["Fantasy", "Drama"], status: "Finished", platform: "HBO Max", favorite: "Jon Snow", bestSeason: "Season 4", rewatch: "Medium", poster: "", notes: "Peak fantasy TV when it was at its best." },
+      { id: crypto.randomUUID(), type: "show", title: "White Collar", rating: 8.9, genres: ["Crime", "Drama"], status: "Finished", platform: "Hulu", favorite: "Neal Caffrey", bestSeason: "Season 2", rewatch: "High", poster: "", notes: "Smooth, smart, and easy to watch." },
+
+      { id: crypto.randomUUID(), type: "movie", title: "Add Your Favorite Movie", rating: 9.0, genres: ["Action"], status: "Finished", platform: "Your Platform", favorite: "Favorite character", bestSeason: "N/A", rewatch: "High", poster: "", notes: "Replace this with your real favorite movie." },
+
+      { id: crypto.randomUUID(), type: "watchlist", title: "Banshee", rating: 0, genres: ["Action", "Crime"], status: "Want to Watch", platform: "Max / Prime", favorite: "", bestSeason: "", rewatch: "", poster: "", notes: "Recommended because it matches Reacher, Shooter, and Tulsa King." },
+      { id: crypto.randomUUID(), type: "watchlist", title: "From", rating: 0, genres: ["Thriller", "Sci-Fi"], status: "Want to Watch", platform: "MGM+", favorite: "", bestSeason: "", rewatch: "", poster: "", notes: "Mystery show with Severance and The 100 vibes." }
     ];
 
-    const showGrid = document.getElementById("showGrid");
+    let items = JSON.parse(localStorage.getItem("myWatchLedgerItems")) || defaultItems;
+    let currentTab = "home";
+    let draggedId = null;
+
+    const grid = document.getElementById("itemGrid");
     const searchInput = document.getElementById("searchInput");
     const genreFilter = document.getElementById("genreFilter");
     const statusFilter = document.getElementById("statusFilter");
+    const featuredArea = document.getElementById("featuredArea");
+    const sectionHeading = document.getElementById("sectionHeading");
 
-    function renderShows() {
+    function saveToStorage() {
+      localStorage.setItem("myWatchLedgerItems", JSON.stringify(items));
+    }
+
+    function getVisibleType() {
+      if (currentTab === "home") return "show";
+      if (currentTab === "shows") return "show";
+      if (currentTab === "movies") return "movie";
+      if (currentTab === "watchlist") return "watchlist";
+      return "show";
+    }
+
+    function getFilteredItems() {
+      const type = getVisibleType();
       const search = searchInput.value.toLowerCase();
       const genre = genreFilter.value;
       const status = statusFilter.value;
 
-      const filteredShows = shows.filter(show => {
-        const matchesSearch = show.title.toLowerCase().includes(search);
-        const matchesGenre = genre === "All" || show.genre.includes(genre);
-        const matchesStatus = status === "All" || show.status === status;
-        return matchesSearch && matchesGenre && matchesStatus;
+      return items.filter(item => {
+        const matchesType = item.type === type;
+        const matchesSearch = item.title.toLowerCase().includes(search);
+        const matchesGenre = genre === "All" || item.genres.includes(genre);
+        const matchesStatus = status === "All" || item.status === status;
+        return matchesType && matchesSearch && matchesGenre && matchesStatus;
       });
+    }
 
-      showGrid.innerHTML = "";
+    function renderFeatured() {
+      if (currentTab !== "home") {
+        featuredArea.innerHTML = "";
+        return;
+      }
 
-      filteredShows.forEach(show => {
+      const topShow = items.filter(i => i.type === "show")[0];
+
+      if (!topShow) {
+        featuredArea.innerHTML = "";
+        return;
+      }
+
+      featuredArea.innerHTML = `
+        <div class="featured">
+          <div class="featured-poster" style="${topShow.poster ? `background-image:url('${topShow.poster}')` : ""}">
+            ${topShow.poster ? "" : topShow.title}
+          </div>
+
+          <div>
+            <h3>#1 All-Time Favorite</h3>
+            <h2>${topShow.title}</h2>
+            <div class="rating">★ ${topShow.rating}/10</div>
+            <p>${topShow.notes}</p>
+            <br>
+            <p><b>Genre:</b> ${topShow.genres.join(" • ")}</p>
+            <p><b>Favorite Character:</b> ${topShow.favorite || "N/A"}</p>
+            <p><b>Best Season:</b> ${topShow.bestSeason || "N/A"}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderItems() {
+      renderFeatured();
+
+      const filtered = getFilteredItems();
+      grid.innerHTML = "";
+
+      const type = getVisibleType();
+
+      if (currentTab === "home") sectionHeading.textContent = "Top Ranked Shows";
+      if (currentTab === "shows") sectionHeading.textContent = "My Favorite Shows";
+      if (currentTab === "movies") sectionHeading.textContent = "My Favorite Movies";
+      if (currentTab === "watchlist") sectionHeading.textContent = "My Watchlist";
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="empty">No titles found. Add one or clear your filters.</div>`;
+        return;
+      }
+
+      filtered.forEach((item, index) => {
+        const trueRank = items.filter(i => i.type === type).findIndex(i => i.id === item.id) + 1;
+
         const card = document.createElement("div");
-        card.className = "show-card";
+        card.className = "card";
+        card.draggable = true;
+        card.dataset.id = item.id;
 
         card.innerHTML = `
-          <div class="rank">#${show.rank}</div>
-          <div class="poster">${show.title}</div>
+          <div class="rank">${item.type === "watchlist" ? "#" + trueRank : "#" + trueRank}</div>
+
+          <div class="poster" style="${item.poster ? `background-image:url('${item.poster}')` : ""}">
+            ${item.poster ? "" : item.title}
+          </div>
+
           <div class="content">
-            <h2>${show.title}</h2>
-            <div class="rating">★ ${show.rating}/10</div>
+            <h2>${item.title}</h2>
+            <div class="rating">${item.rating > 0 ? "★ " + item.rating + "/10" : "Not Rated Yet"}</div>
 
             <div class="tags">
-              ${show.genre.map(g => `<span class="tag">${g}</span>`).join("")}
-              <span class="tag">${show.status}</span>
+              ${item.genres.map(g => `<span class="tag">${g}</span>`).join("")}
+              <span class="tag">${item.status}</span>
             </div>
 
             <div class="info">
-              <p><b>Platform:</b> ${show.platform}</p>
-              <p><b>Favorite Character:</b> ${show.favoriteCharacter}</p>
-              <p><b>Best Season:</b> ${show.bestSeason}</p>
-              <p><b>Rewatch Value:</b> ${show.rewatch}</p>
-              <p><b>Notes:</b> ${show.notes}</p>
+              <p><b>Platform:</b> ${item.platform || "N/A"}</p>
+              <p><b>Favorite Character:</b> ${item.favorite || "N/A"}</p>
+              <p><b>Best Season:</b> ${item.bestSeason || "N/A"}</p>
+              <p><b>Rewatch Value:</b> ${item.rewatch || "N/A"}</p>
+              <p><b>Notes:</b> ${item.notes || "N/A"}</p>
+            </div>
+
+            <div class="card-actions">
+              <button class="small-btn" onclick="editItem('${item.id}')">Edit</button>
+              <button class="small-btn delete-btn" onclick="deleteItem('${item.id}')">Delete</button>
             </div>
           </div>
         `;
 
-        showGrid.appendChild(card);
+        card.addEventListener("dragstart", () => {
+          draggedId = item.id;
+          card.classList.add("dragging");
+        });
+
+        card.addEventListener("dragend", () => {
+          card.classList.remove("dragging");
+          draggedId = null;
+        });
+
+        card.addEventListener("dragover", e => {
+          e.preventDefault();
+        });
+
+        card.addEventListener("drop", e => {
+          e.preventDefault();
+          reorderItems(draggedId, item.id);
+        });
+
+        grid.appendChild(card);
       });
+    }
+
+    function reorderItems(fromId, toId) {
+      if (!fromId || fromId === toId) return;
+
+      const type = getVisibleType();
+      const sameTypeItems = items.filter(i => i.type === type);
+      const otherItems = items.filter(i => i.type !== type);
+
+      const fromIndex = sameTypeItems.findIndex(i => i.id === fromId);
+      const toIndex = sameTypeItems.findIndex(i => i.id === toId);
+
+      const [moved] = sameTypeItems.splice(fromIndex, 1);
+      sameTypeItems.splice(toIndex, 0, moved);
+
+      items = [...sameTypeItems, ...otherItems];
+      saveToStorage();
+      updateStats();
+      renderItems();
     }
 
     function updateStats() {
-      document.getElementById("totalShows").textContent = shows.length;
+      document.getElementById("totalItems").textContent = items.length;
+      document.getElementById("totalShows").textContent = items.filter(i => i.type === "show").length;
+      document.getElementById("totalMovies").textContent = items.filter(i => i.type === "movie").length;
 
-      const avg = shows.reduce((sum, show) => sum + show.rating, 0) / shows.length;
+      const rated = items.filter(i => Number(i.rating) > 0);
+      const avg = rated.length ? rated.reduce((sum, item) => sum + Number(item.rating), 0) / rated.length : 0;
       document.getElementById("averageRating").textContent = avg.toFixed(1);
-
-      const genreCount = {};
-      shows.forEach(show => {
-        show.genre.forEach(g => {
-          genreCount[g] = (genreCount[g] || 0) + 1;
-        });
-      });
-
-      const topGenre = Object.keys(genreCount).sort((a, b) => genreCount[b] - genreCount[a])[0];
-      document.getElementById("topGenre").textContent = topGenre;
     }
 
-    searchInput.addEventListener("input", renderShows);
-    genreFilter.addEventListener("change", renderShows);
-    statusFilter.addEventListener("change", renderShows);
+    function openModal() {
+      document.getElementById("modalTitle").textContent = "Add New Title";
+      document.getElementById("editId").value = "";
+      document.getElementById("typeInput").value = getVisibleType();
+      document.getElementById("titleInput").value = "";
+      document.getElementById("ratingInput").value = "";
+      document.getElementById("genresInput").value = "";
+      document.getElementById("platformInput").value = "";
+      document.getElementById("statusInput").value = "Finished";
+      document.getElementById("favoriteInput").value = "";
+      document.getElementById("seasonInput").value = "";
+      document.getElementById("rewatchInput").value = "";
+      document.getElementById("posterInput").value = "";
+      document.getElementById("notesInput").value = "";
+      document.getElementById("itemModal").classList.add("open");
+    }
+
+    function closeModal() {
+      document.getElementById("itemModal").classList.remove("open");
+    }
+
+    function saveItem() {
+      const id = document.getElementById("editId").value;
+
+      const itemData = {
+        id: id || crypto.randomUUID(),
+        type: document.getElementById("typeInput").value,
+        title: document.getElementById("titleInput").value.trim(),
+        rating: Number(document.getElementById("ratingInput").value) || 0,
+        genres: document.getElementById("genresInput").value.split(",").map(g => g.trim()).filter(Boolean),
+        platform: document.getElementById("platformInput").value.trim(),
+        status: document.getElementById("statusInput").value,
+        favorite: document.getElementById("favoriteInput").value.trim(),
+        bestSeason: document.getElementById("seasonInput").value.trim(),
+        rewatch: document.getElementById("rewatchInput").value.trim(),
+        poster: document.getElementById("posterInput").value.trim(),
+        notes: document.getElementById("notesInput").value.trim()
+      };
+
+      if (!itemData.title) {
+        alert("Add a title first.");
+        return;
+      }
+
+      if (id) {
+        items = items.map(item => item.id === id ? itemData : item);
+      } else {
+        items.push(itemData);
+      }
+
+      saveToStorage();
+      closeModal();
+      updateStats();
+      renderItems();
+    }
+
+    function editItem(id) {
+      const item = items.find(i => i.id === id);
+      if (!item) return;
+
+      document.getElementById("modalTitle").textContent = "Edit Title";
+      document.getElementById("editId").value = item.id;
+      document.getElementById("typeInput").value = item.type;
+      document.getElementById("titleInput").value = item.title;
+      document.getElementById("ratingInput").value = item.rating;
+      document.getElementById("genresInput").value = item.genres.join(", ");
+      document.getElementById("platformInput").value = item.platform;
+      document.getElementById("statusInput").value = item.status;
+      document.getElementById("favoriteInput").value = item.favorite;
+      document.getElementById("seasonInput").value = item.bestSeason;
+      document.getElementById("rewatchInput").value = item.rewatch;
+      document.getElementById("posterInput").value = item.poster;
+      document.getElementById("notesInput").value = item.notes;
+
+      document.getElementById("itemModal").classList.add("open");
+    }
+
+    function deleteItem(id) {
+      if (!confirm("Delete this title?")) return;
+      items = items.filter(item => item.id !== id);
+      saveToStorage();
+      updateStats();
+      renderItems();
+    }
+
+    function resetData() {
+      if (!confirm("Reset everything back to demo data?")) return;
+      localStorage.removeItem("myWatchLedgerItems");
+      location.reload();
+    }
+
+    document.querySelectorAll(".nav-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentTab = btn.dataset.tab;
+        searchInput.value = "";
+        genreFilter.value = "All";
+        statusFilter.value = "All";
+        renderItems();
+      });
+    });
+
+    searchInput.addEventListener("input", renderItems);
+    genreFilter.addEventListener("change", renderItems);
+    statusFilter.addEventListener("change", renderItems);
 
     updateStats();
-    renderShows();
+    renderItems();
   </script>
 
 </body>
