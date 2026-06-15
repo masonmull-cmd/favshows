@@ -1,9 +1,451 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>MyWatchLedger</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Favorite Shows Ranked</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: #070707;
+      color: white;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 35px 7%;
+      background: linear-gradient(to bottom, rgba(0,0,0,.95), rgba(0,0,0,.65), transparent);
+    }
+
+    .hero {
+      padding: 60px 7% 35px;
+      background:
+        linear-gradient(to right, rgba(0,0,0,.95), rgba(0,0,0,.55)),
+        url("https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?auto=format&fit=crop&w=1600&q=80");
+      background-size: cover;
+      background-position: center;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.3rem, 6vw, 5rem);
+      margin-bottom: 15px;
+    }
+
+    .hero p {
+      max-width: 700px;
+      color: #d6d6d6;
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    .stats {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+
+    .stat {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      padding: 15px 22px;
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.5rem;
+      color: #ffcc66;
+    }
+
+    main {
+      padding: 35px 7%;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 25px;
+    }
+
+    input, select {
+      background: #141414;
+      color: white;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 12px;
+      padding: 13px 15px;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    input {
+      flex: 1;
+      min-width: 240px;
+    }
+
+    select {
+      min-width: 180px;
+    }
+
+    .show-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 22px;
+    }
+
+    .show-card {
+      background: linear-gradient(180deg, #181818, #0e0e0e);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 22px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 20px 40px rgba(0,0,0,.35);
+      transition: .25s ease;
+    }
+
+    .show-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(255,204,102,.55);
+    }
+
+    .rank {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: #ffcc66;
+      color: #050505;
+      font-weight: 900;
+      padding: 8px 12px;
+      border-radius: 999px;
+      z-index: 2;
+    }
+
+    .poster {
+      height: 185px;
+      background: linear-gradient(135deg, #222, #444);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 25px;
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: rgba(255,255,255,.9);
+    }
+
+    .content {
+      padding: 20px;
+    }
+
+    .content h2 {
+      font-size: 1.35rem;
+      margin-bottom: 10px;
+    }
+
+    .rating {
+      color: #ffcc66;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .tag {
+      font-size: .8rem;
+      background: rgba(255,255,255,.09);
+      border: 1px solid rgba(255,255,255,.1);
+      padding: 6px 9px;
+      border-radius: 999px;
+      color: #ddd;
+    }
+
+    .info {
+      color: #cfcfcf;
+      font-size: .92rem;
+      line-height: 1.55;
+    }
+
+    .info b {
+      color: white;
+    }
+
+    footer {
+      padding: 30px 7%;
+      color: #888;
+      text-align: center;
+      border-top: 1px solid rgba(255,255,255,.08);
+      margin-top: 30px;
+    }
+  </style>
 </head>
-<body style="background:black;color:white;text-align:center;padding-top:100px;font-family:Arial;">
-    <h1>MYWATCHLEDGER IS LIVE 🚀</h1>
+
+<body>
+
+  <section class="hero">
+    <h1>My Favorite Shows Ranked</h1>
+    <p>
+      A personal ranking of my favorite shows, with ratings, genres, favorite characters,
+      best seasons, and rewatch value.
+    </p>
+
+    <div class="stats">
+      <div class="stat">
+        <strong id="totalShows">0</strong>
+        Shows Ranked
+      </div>
+      <div class="stat">
+        <strong id="averageRating">0</strong>
+        Avg Rating
+      </div>
+      <div class="stat">
+        <strong id="topGenre">Drama</strong>
+        Top Genre
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <div class="controls">
+      <input type="text" id="searchInput" placeholder="Search shows..." />
+
+      <select id="genreFilter">
+        <option value="All">All Genres</option>
+        <option value="Drama">Drama</option>
+        <option value="Action">Action</option>
+        <option value="Crime">Crime</option>
+        <option value="Supernatural">Supernatural</option>
+        <option value="Comedy">Comedy</option>
+        <option value="Sci-Fi">Sci-Fi</option>
+        <option value="Fantasy">Fantasy</option>
+      </select>
+
+      <select id="statusFilter">
+        <option value="All">All Status</option>
+        <option value="Finished">Finished</option>
+        <option value="Watching">Watching</option>
+        <option value="Need to Finish">Need to Finish</option>
+      </select>
+    </div>
+
+    <div class="show-grid" id="showGrid"></div>
+  </main>
+
+  <footer>
+    Built for ranking the best shows of all time.
+  </footer>
+
+  <script>
+    const shows = [
+      {
+        rank: 1,
+        title: "Ted Lasso",
+        rating: 10,
+        genre: ["Comedy", "Drama"],
+        status: "Finished",
+        platform: "Apple TV+",
+        favoriteCharacter: "Roy Kent",
+        bestSeason: "Season 1",
+        rewatch: "High",
+        notes: "One of the best feel-good shows ever."
+      },
+      {
+        rank: 2,
+        title: "Suits",
+        rating: 9.7,
+        genre: ["Drama"],
+        status: "Finished",
+        platform: "Netflix / Peacock",
+        favoriteCharacter: "Harvey Specter",
+        bestSeason: "Season 2",
+        rewatch: "High",
+        notes: "Smart, clean, and easy to binge."
+      },
+      {
+        rank: 3,
+        title: "Prison Break",
+        rating: 9.6,
+        genre: ["Action", "Drama"],
+        status: "Finished",
+        platform: "Hulu",
+        favoriteCharacter: "Michael Scofield",
+        bestSeason: "Season 1",
+        rewatch: "High",
+        notes: "One of the best first seasons ever."
+      },
+      {
+        rank: 4,
+        title: "The 100",
+        rating: 9.5,
+        genre: ["Sci-Fi", "Drama"],
+        status: "Finished",
+        platform: "Netflix",
+        favoriteCharacter: "Bellamy",
+        bestSeason: "Season 2",
+        rewatch: "Medium",
+        notes: "Great survival and post-apocalyptic story."
+      },
+      {
+        rank: 5,
+        title: "Yellowstone",
+        rating: 9.4,
+        genre: ["Drama"],
+        status: "Watching",
+        platform: "Paramount",
+        favoriteCharacter: "Rip Wheeler",
+        bestSeason: "Season 3",
+        rewatch: "High",
+        notes: "Perfect mix of ranch drama and power."
+      },
+      {
+        rank: 6,
+        title: "Daredevil",
+        rating: 9.3,
+        genre: ["Action", "Crime"],
+        status: "Finished",
+        platform: "Disney+",
+        favoriteCharacter: "Matt Murdock",
+        bestSeason: "Season 3",
+        rewatch: "High",
+        notes: "Probably the best Marvel show."
+      },
+      {
+        rank: 7,
+        title: "Reacher",
+        rating: 9.2,
+        genre: ["Action", "Crime"],
+        status: "Watching",
+        platform: "Prime Video",
+        favoriteCharacter: "Jack Reacher",
+        bestSeason: "Season 1",
+        rewatch: "High",
+        notes: "Straight-up action and mystery."
+      },
+      {
+        rank: 8,
+        title: "The Originals",
+        rating: 9.1,
+        genre: ["Supernatural", "Drama"],
+        status: "Finished",
+        platform: "Netflix",
+        favoriteCharacter: "Klaus Mikaelson",
+        bestSeason: "Season 3",
+        rewatch: "High",
+        notes: "Darker and better than most supernatural shows."
+      },
+      {
+        rank: 9,
+        title: "Game of Thrones",
+        rating: 9.0,
+        genre: ["Fantasy", "Drama"],
+        status: "Finished",
+        platform: "HBO Max",
+        favoriteCharacter: "Jon Snow",
+        bestSeason: "Season 4",
+        rewatch: "Medium",
+        notes: "Peak fantasy TV when it was at its best."
+      },
+      {
+        rank: 10,
+        title: "White Collar",
+        rating: 8.9,
+        genre: ["Crime", "Drama"],
+        status: "Finished",
+        platform: "Hulu",
+        favoriteCharacter: "Neal Caffrey",
+        bestSeason: "Season 2",
+        rewatch: "High",
+        notes: "Smooth, smart, and easy to watch."
+      }
+    ];
+
+    const showGrid = document.getElementById("showGrid");
+    const searchInput = document.getElementById("searchInput");
+    const genreFilter = document.getElementById("genreFilter");
+    const statusFilter = document.getElementById("statusFilter");
+
+    function renderShows() {
+      const search = searchInput.value.toLowerCase();
+      const genre = genreFilter.value;
+      const status = statusFilter.value;
+
+      const filteredShows = shows.filter(show => {
+        const matchesSearch = show.title.toLowerCase().includes(search);
+        const matchesGenre = genre === "All" || show.genre.includes(genre);
+        const matchesStatus = status === "All" || show.status === status;
+        return matchesSearch && matchesGenre && matchesStatus;
+      });
+
+      showGrid.innerHTML = "";
+
+      filteredShows.forEach(show => {
+        const card = document.createElement("div");
+        card.className = "show-card";
+
+        card.innerHTML = `
+          <div class="rank">#${show.rank}</div>
+          <div class="poster">${show.title}</div>
+          <div class="content">
+            <h2>${show.title}</h2>
+            <div class="rating">★ ${show.rating}/10</div>
+
+            <div class="tags">
+              ${show.genre.map(g => `<span class="tag">${g}</span>`).join("")}
+              <span class="tag">${show.status}</span>
+            </div>
+
+            <div class="info">
+              <p><b>Platform:</b> ${show.platform}</p>
+              <p><b>Favorite Character:</b> ${show.favoriteCharacter}</p>
+              <p><b>Best Season:</b> ${show.bestSeason}</p>
+              <p><b>Rewatch Value:</b> ${show.rewatch}</p>
+              <p><b>Notes:</b> ${show.notes}</p>
+            </div>
+          </div>
+        `;
+
+        showGrid.appendChild(card);
+      });
+    }
+
+    function updateStats() {
+      document.getElementById("totalShows").textContent = shows.length;
+
+      const avg = shows.reduce((sum, show) => sum + show.rating, 0) / shows.length;
+      document.getElementById("averageRating").textContent = avg.toFixed(1);
+
+      const genreCount = {};
+      shows.forEach(show => {
+        show.genre.forEach(g => {
+          genreCount[g] = (genreCount[g] || 0) + 1;
+        });
+      });
+
+      const topGenre = Object.keys(genreCount).sort((a, b) => genreCount[b] - genreCount[a])[0];
+      document.getElementById("topGenre").textContent = topGenre;
+    }
+
+    searchInput.addEventListener("input", renderShows);
+    genreFilter.addEventListener("change", renderShows);
+    statusFilter.addEventListener("change", renderShows);
+
+    updateStats();
+    renderShows();
+  </script>
+
 </body>
 </html>
