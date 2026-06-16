@@ -34,6 +34,7 @@ input,select,textarea{background:#111;color:white;border:1px solid var(--border)
 .rank{color:var(--green);font-weight:900;font-size:1rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}.show-info h2{font-size:clamp(2rem,4vw,4rem);line-height:1;margin-bottom:10px}.rating{color:var(--gold);font-weight:900;margin-bottom:12px}
 .tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}.tag{font-size:.8rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.13);padding:6px 9px;border-radius:999px;color:#eee}
 .info{color:#d0d0d0;font-size:.95rem;line-height:1.55;max-width:760px}.info b{color:white}.card-actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}.small-btn{border-radius:10px;padding:9px 11px;font-size:.85rem}.delete-btn:hover{background:var(--red);color:white;border-color:var(--red)}
+.empty{color:var(--muted);padding:35px;border:1px dashed var(--border);border-radius:20px;text-align:center}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.82);display:none;align-items:center;justify-content:center;z-index:999;padding:18px}.modal.open{display:flex}.modal-box{width:min(760px,100%);max-height:92vh;overflow-y:auto;background:#101010;border:1px solid var(--border);border-radius:24px;padding:24px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.form-full{grid-column:1/-1}.form-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;flex-wrap:wrap}
 footer{padding:30px 7%;color:#888;text-align:center;border-top:1px solid var(--border);margin-top:30px}
 @media(max-width:760px){.show-inner{grid-template-columns:1fr}.poster{width:135px;height:200px}.form-grid{grid-template-columns:1fr}}
@@ -114,57 +115,58 @@ footer{padding:30px 7%;color:#888;text-align:center;border-top:1px solid var(--b
 
 <script>
 const fallback="https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?auto=format&fit=crop&w=1600&q=80";
+
 const rawShows=[
-["Ted Lasso",10,["Comedy","Drama"],"Apple TV+","Season 1","High","One of the best feel-good shows ever.","Ted Lasso"],
+["The 100",9.8,["Sci-Fi","Drama"],"Netflix","Season 2","High","Survival, sci-fi, and drama all mixed together.","The 100"],
+["Shooter",9.7,["Action","Thriller"],"Netflix","Season 1","High","Military/action conspiracy show.","Shooter"],
 ["Suits",9.7,["Drama"],"Netflix / Peacock","Season 2","High","Smart, clean, and easy to binge.","Suits"],
-["The 100",9.6,["Sci-Fi","Drama"],"Netflix","Season 2","Medium","Survival, sci-fi, and drama all mixed together.","The 100"],
-["Arrow",9.4,["Action","Supernatural"],"Netflix / The CW","Season 2","High","One of the best superhero shows.","Arrow"],
-["The Flash",9.2,["Action","Sci-Fi"],"Netflix / The CW","Season 1","High","Fast-paced superhero story.","The Flash"],
+["Yellowstone",9.6,["Drama","Western"],"Paramount","Season 3","High","Ranch drama, power, and family loyalty.","Yellowstone"],
 ["The Originals",9.5,["Supernatural","Drama"],"Netflix","Season 3","High","Darker and better than most supernatural shows.","The Originals"],
-["Vampire Diaries",9.3,["Supernatural","Drama"],"Netflix / Peacock","Season 2","High","Classic supernatural drama.","The Vampire Diaries"],
-["Yellowstone",9.4,["Drama","Western"],"Paramount","Season 3","High","Ranch drama, power, and family loyalty.","Yellowstone"],
-["Marshals",8.5,["Drama","Crime"],"TBD","TBD","Medium","Added from your list.","Marshals"],
-["Dutton Ranch",8.5,["Drama","Western"],"Paramount","TBD","Medium","Yellowstone universe show.","Dutton Ranch"],
-["The Madison",8.5,["Drama"],"Paramount","TBD","Medium","Yellowstone universe show.","The Madison"],
-["Smallville",9.0,["Action","Drama"],"Hulu","Season 4","High","Classic Superman origin show.","Smallville"],
-["Legacies",8.7,["Supernatural","Drama"],"Netflix","Season 1","Medium","Vampire Diaries universe.","Legacies"],
-["Prison Break",9.6,["Action","Drama"],"Hulu","Season 1","High","One of the best first seasons ever.","Prison Break"],
-["The Good Doctor",8.8,["Drama"],"Hulu","Season 1","Medium","Emotional medical drama.","The Good Doctor"],
-["The Terminal List",9.1,["Action","Thriller"],"Prime Video","Season 1","High","Military action revenge thriller.","The Terminal List"],
-["Luke Cage",8.5,["Action","Crime"],"Disney+","Season 1","Medium","Marvel street-level hero show.","Luke Cage"],
-["Daredevil",9.3,["Action","Crime"],"Disney+","Season 3","High","Probably the best Marvel show.","Daredevil"],
-["Jessica Jones",8.6,["Action","Crime"],"Disney+","Season 1","Medium","Dark Marvel detective-style show.","Jessica Jones"],
-["Iron Fist",8.0,["Action"],"Disney+","Season 1","Medium","Marvel martial arts show.","Iron Fist"],
-["Severance",9.4,["Sci-Fi","Thriller"],"Apple TV+","Season 1","High","Mystery and sci-fi done extremely well.","Severance"],
-["Game of Thrones",9.0,["Fantasy","Drama"],"HBO Max","Season 4","Medium","Peak fantasy TV when it was at its best.","Game of Thrones"],
-["Reacher",9.2,["Action","Crime"],"Prime Video","Season 1","High","Straight-up action and mystery.","Reacher"],
-["Black Bird",9.0,["Crime","Drama"],"Apple TV+","Season 1","Medium","Dark crime drama with great acting.","Black Bird"],
-["White Collar",8.9,["Crime","Drama"],"Hulu","Season 2","High","Smooth, smart, and easy to watch.","White Collar"],
-["The Blacklist",8.9,["Crime","Thriller"],"Netflix","Season 1","High","Crime thriller with a strong lead.","The Blacklist"],
-["Lucifer",8.8,["Supernatural","Crime"],"Netflix","Season 2","High","Crime solving with supernatural comedy.","Lucifer"],
-["The Night Agent",8.7,["Action","Thriller"],"Netflix","Season 1","High","Fast spy thriller.","The Night Agent"],
-["Teen Wolf",8.8,["Supernatural","Drama"],"Hulu / Paramount","Season 3","High","Supernatural high school drama.","Teen Wolf"],
-["Peaky Blinders",9.2,["Crime","Drama"],"Netflix","Season 2","High","Stylish crime drama.","Peaky Blinders"],
-["You",8.6,["Thriller","Drama"],"Netflix","Season 1","Medium","Dark psychological thriller.","You"],
-["Manifest",8.5,["Sci-Fi","Drama"],"Netflix","Season 1","Medium","Mystery plane drama.","Manifest"],
-["Ginny & Georgia",8.3,["Drama","Comedy"],"Netflix","Season 1","Medium","Drama with comedy and family storylines.","Ginny & Georgia"],
-["Outer Banks",8.7,["Action","Drama"],"Netflix","Season 1","High","Treasure hunting and beach drama.","Outer Banks"],
-["Money Heist",9.1,["Crime","Thriller"],"Netflix","Season 1","High","Heist show with nonstop tension.","Money Heist"],
-["Riverdale",8.0,["Drama","Mystery"],"Netflix / The CW","Season 1","Medium","Teen mystery drama.","Riverdale"],
-["All American",8.5,["Drama"],"Netflix","Season 1","Medium","Football and life drama.","All American"],
-["The Witcher",8.6,["Fantasy","Action"],"Netflix","Season 1","Medium","Fantasy action world.","The Witcher"],
-["Tires",8.0,["Comedy"],"Netflix","Season 1","Medium","Workplace comedy.","Tires"],
-["Travelers",8.7,["Sci-Fi","Drama"],"Netflix","Season 1","Medium","Time travel sci-fi show.","Travelers"],
-["The Walking Dead",8.9,["Drama","Thriller"],"Netflix / AMC","Season 3","High","Zombie survival drama.","The Walking Dead"],
-["11.22.63",8.8,["Sci-Fi","Drama"],"Hulu","Season 1","Medium","Time travel mystery drama.","11.22.63"],
-["Shooter",8.6,["Action","Thriller"],"Netflix","Season 1","High","Military/action conspiracy show.","Shooter"],
-["Dexter",9.1,["Crime","Drama"],"Paramount / Netflix","Season 4","High","Crime drama with a dark lead.","Dexter"],
-["Tulsa King",8.8,["Crime","Drama"],"Paramount+","Season 1","High","Mobster story with a modern twist.","Tulsa King"],
-["The Mentalist",8.8,["Crime","Drama"],"Hulu","Season 2","High","Smart detective-style show.","The Mentalist"],
-["The Day of the Jackal",9.0,["Thriller","Action"],"Peacock","Season 1","High","Assassin thriller with a serious tone.","The Day of the Jackal"]
+["Prison Break",9.5,["Action","Drama"],"Hulu","Season 1","High","One of the best first seasons ever.","Prison Break"],
+["White Collar",9.4,["Crime","Drama"],"Hulu","Season 2","High","Smooth, smart, and easy to watch.","White Collar"],
+["The Mentalist",9.3,["Crime","Drama"],"Hulu","Season 2","High","Smart detective-style show.","The Mentalist"],
+["Arrow",9.2,["Action","Supernatural"],"Netflix / The CW","Season 2","High","One of the best superhero shows.","Arrow"],
+["Ted Lasso",9.1,["Comedy","Drama"],"Apple TV+","Season 1","High","One of the best feel-good shows ever.","Ted Lasso"],
+["Outer Banks",9.0,["Action","Drama"],"Netflix","Season 1","High","Treasure hunting and beach drama.","Outer Banks"],
+["Money Heist",8.9,["Crime","Thriller"],"Netflix","Season 1","High","Heist show with nonstop tension.","Money Heist"],
+["Vampire Diaries",8.8,["Supernatural","Drama"],"Netflix / Peacock","Season 2","High","Classic supernatural drama.","The Vampire Diaries"],
+["Dutton Ranch",8.7,["Drama","Western"],"Paramount","TBD","Medium","Yellowstone universe show.","Dutton Ranch"],
+["Ginny & Georgia",8.6,["Drama","Comedy"],"Netflix","Season 1","Medium","Drama with comedy and family storylines.","Ginny & Georgia"],
+["Tires",8.5,["Comedy"],"Netflix","Season 1","Medium","Workplace comedy.","Tires"],
+["Lucifer",8.4,["Supernatural","Crime"],"Netflix","Season 2","High","Crime solving with supernatural comedy.","Lucifer"],
+["The Blacklist",8.3,["Crime","Thriller"],"Netflix","Season 1","High","Crime thriller with a strong lead.","The Blacklist"],
+
+["Severance",9.0,["Sci-Fi","Thriller"],"Apple TV+","Season 1","High","Mystery and sci-fi done extremely well.","Severance"],
+["Reacher",8.9,["Action","Crime"],"Prime Video","Season 1","High","Straight-up action and mystery.","Reacher"],
+["Dexter",8.8,["Crime","Drama"],"Paramount / Netflix","Season 4","High","Crime drama with a dark lead.","Dexter"],
+["Peaky Blinders",8.8,["Crime","Drama"],"Netflix","Season 2","High","Stylish crime drama.","Peaky Blinders"],
+["The Terminal List",8.7,["Action","Thriller"],"Prime Video","Season 1","High","Military action revenge thriller.","The Terminal List"],
+["The Day of the Jackal",8.7,["Thriller","Action"],"Peacock","Season 1","High","Assassin thriller with a serious tone.","The Day of the Jackal"],
+["Teen Wolf",8.6,["Supernatural","Drama"],"Hulu / Paramount","Season 3","High","Supernatural high school drama.","Teen Wolf"],
+["The Flash",8.6,["Action","Sci-Fi"],"Netflix / The CW","Season 1","High","Fast-paced superhero story.","The Flash"],
+["Game of Thrones",8.5,["Fantasy","Drama"],"HBO Max","Season 4","Medium","Peak fantasy TV when it was at its best.","Game of Thrones"],
+["Tulsa King",8.5,["Crime","Drama"],"Paramount+","Season 1","High","Mobster story with a modern twist.","Tulsa King"],
+["The Walking Dead",8.4,["Drama","Thriller"],"Netflix / AMC","Season 3","High","Zombie survival drama.","The Walking Dead"],
+["Daredevil",8.4,["Action","Crime"],"Disney+","Season 3","High","Probably the best Marvel show.","Daredevil"],
+["Travelers",8.3,["Sci-Fi","Drama"],"Netflix","Season 1","Medium","Time travel sci-fi show.","Travelers"],
+["11.22.63",8.3,["Sci-Fi","Drama"],"Hulu","Season 1","Medium","Time travel mystery drama.","11.22.63"],
+["Black Bird",8.2,["Crime","Drama"],"Apple TV+","Season 1","Medium","Dark crime drama with great acting.","Black Bird"],
+["The Night Agent",8.2,["Action","Thriller"],"Netflix","Season 1","High","Fast spy thriller.","The Night Agent"],
+["Manifest",8.1,["Sci-Fi","Drama"],"Netflix","Season 1","Medium","Mystery plane drama.","Manifest"],
+["All American",8.1,["Drama"],"Netflix","Season 1","Medium","Football and life drama.","All American"],
+["The Witcher",8.0,["Fantasy","Action"],"Netflix","Season 1","Medium","Fantasy action world.","The Witcher"],
+["Smallville",8.0,["Action","Drama"],"Hulu","Season 4","High","Classic Superman origin show.","Smallville"],
+["The Good Doctor",7.9,["Drama"],"Hulu","Season 1","Medium","Emotional medical drama.","The Good Doctor"],
+["Legacies",7.9,["Supernatural","Drama"],"Netflix","Season 1","Medium","Vampire Diaries universe.","Legacies"],
+["Riverdale",7.8,["Drama","Mystery"],"Netflix / The CW","Season 1","Medium","Teen mystery drama.","Riverdale"],
+["Luke Cage",7.8,["Action","Crime"],"Disney+","Season 1","Medium","Marvel street-level hero show.","Luke Cage"],
+["Jessica Jones",7.7,["Action","Crime"],"Disney+","Season 1","Medium","Dark Marvel detective-style show.","Jessica Jones"],
+["Iron Fist",7.5,["Action"],"Disney+","Season 1","Medium","Marvel martial arts show.","Iron Fist"],
+["The Madison",7.5,["Drama"],"Paramount","TBD","Medium","Yellowstone universe show.","The Madison"],
+["Marshals",7.5,["Drama","Crime"],"TBD","TBD","Medium","Added from your list.","Marshals"]
 ];
 
-const STORAGE_KEY="myWatchLedgerRealImagesV1";
+const STORAGE_KEY="myWatchLedgerOrderedV1";
 
 const defaultItems=rawShows.map(x=>({
 id:crypto.randomUUID(),type:"show",title:x[0],rating:x[1],genres:x[2],status:"Finished",
@@ -303,7 +305,7 @@ document.getElementById("notesInput").value=i.notes;
 document.getElementById("itemModal").classList.add("open");
 }
 function deleteItem(id){if(!confirm("Delete this title?"))return;items=items.filter(i=>i.id!==id);save();render()}
-function resetData(){if(!confirm("Reset everything and reload show images?"))return;localStorage.removeItem(STORAGE_KEY);location.reload()}
+function resetData(){if(!confirm("Reset everything to the new ranking order?"))return;localStorage.removeItem(STORAGE_KEY);location.reload()}
 
 document.querySelectorAll(".nav-btn").forEach(btn=>btn.addEventListener("click",()=>{
 document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
